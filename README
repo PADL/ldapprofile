@@ -1,0 +1,52 @@
+
+ldapprofile is a tool for generating an /etc/ldap.conf
+file from profile information in the directory.
+
+The following programs support the ldap.conf syntax:
+
+	o nss_ldap from www.padl.com
+	o pam_ldap from www.padl.com
+	o OpenLDAP from www.openldap.org
+
+Note that nss_ldap and pam_ldap do not yet know how
+to deal with search scopes and filters specified
+in the serviceSearchDescriptor attribute. We're
+working on it.
+
+The schema for profile information is defined 
+in draft-joslin-config-schema-00.txt. We don't
+support all attributes (particularly the security
+and schema mapping attributes) yet, and it will
+be a while before PADL's modules support schema
+mapping.
+
+The PADL migration tools now support generation
+of a simple profile from information supplied
+by the user. You can download these at
+ftp://ftp.padl.com/pub/MigrationTools.tar.gz.
+
+For example:
+
+lukeh@padl/au[192]% ./migrate_profile.pl ldaphost
+dn: cn=config,dc=padl,dc=com
+cn: config
+objectClass: DUAConfigProfile
+defaultServerList: ldaphost
+defaultSearchBase: dc=padl,dc=com
+defaultSearchScope: one
+serviceSearchDescriptor: fstab:ou=Mounts,dc=padl,dc=com
+serviceSearchDescriptor: hosts:ou=Hosts,dc=padl,dc=com
+serviceSearchDescriptor: passwd:ou=People,dc=padl,dc=com
+serviceSearchDescriptor: aliases:ou=Aliases,dc=padl,dc=com
+serviceSearchDescriptor: services:ou=Services,dc=padl,dc=com
+serviceSearchDescriptor: netgroup:ou=Netgroup,dc=padl,dc=com
+serviceSearchDescriptor: rpc:ou=Rpc,dc=padl,dc=com
+serviceSearchDescriptor: protocols:ou=Protocols,dc=padl,dc=com
+serviceSearchDescriptor: networks:ou=Networks,dc=padl,dc=com
+serviceSearchDescriptor: group:ou=Group,dc=padl,dc=com
+
+--
+Luke Howard
+PADL Software Pty Ltd
+http://www.padl.com/
+January 2001
