@@ -1,8 +1,9 @@
 #!/bin/sh
 # @(#)ldapclient
-# Copyright (c) 2001 PADL Software Pty Ltd.
+#
+# Copyright (c) 2001 PADL Software Pty Ltd. All rights reserved.
 # See COPYING for license terms.
-
+#
 DEFAULTDOMAINNAME=`/bin/domainname`
 
 if [ "X$FORCE_LDAPCLIENT" = "X" -a -f /etc/ldap.conf ]; then
@@ -40,16 +41,18 @@ echo "$question " | tr -d '\012' > /dev/tty
 read PROFILE
 
 if [ "X$LDAP_BASEDN" != "X" ]; then
-	cmd="ldapprofile -h \"$LDAPHOST\" -b \"$LDAP_BASEDN\""
+	if [ "X$PROFILE" != "X" ]; then
+		ldapprofile -h "$LDAPHOST" -b "$LDAP_BASEDN" -p "$PROFILE" > /etc/ldap.conf
+	else
+		ldapprofile -h "$LDAPHOST" -b "$LDAP_BASEDN" > /etc/ldap.conf
+	fi
 else
-	cmd="ldapprofile -h \"$LDAPHOST\" -d \"$DOMAINNAME\""
+	if [ "X$PROFILE" != "X" ]; then
+		ldapprofile -h "$LDAPHOST" -d "$DOMAINNAME" -p "$PROFILE" > /etc/ldap.conf
+	else
+		ldapprofile -h "$LDAPHOST" -d "$DOMAINNAME" > /etc/ldap.conf
+	fi
 fi
-
-if [ "X$PROFILE" != "X" ]; then
-	cmd="$cmd -p \"$PROFILE\""
-fi
-
-$cmd > /etc/ldap.conf
 
 if [ $? -ne 0 ]; then
 	echo "$0: ldapprofile returned non-zero exit status"

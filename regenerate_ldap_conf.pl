@@ -1,12 +1,13 @@
 #!/usr/bin/perl
-# Copyright (c) 2001 PADL Software Pty Ltd.
-# All rights reserved.
+# @(#)regenerate_ldap_conf.pl
+#
+# Copyright (c) 2001 PADL Software Pty Ltd. All rights reserved.
 # See COPYING for license terms.
-
+#
 # read /etc/ldap.conf, contact the profile
 # server, and regenerate it
 # NOT TESTED -- USE AT YOUR OWN RISK
-
+#
 if (open(LDAPCONF, "/etc/ldap.conf") == 0) {
 	print STDERR "regenerate_ldap_conf.pl: could not find /etc/ldap.conf\n";
 	exit 1;
@@ -52,7 +53,12 @@ push (@LDAPCONFIG, "-b");
 push (@LDAPCONFIG, "\"$PROFILE_BASE\"");
 
 $cmdline = join(' ', @LDAPCONFIG);
-print "$cmdline\n";
+
+if ($PROFILE_NAME ne "") {
+	print "Regenerating LDAP configuration profile $PROFILE_NAME from $PROFILE_BASE on host $PROFILE_HOST\n";
+} else {
+	print "Regenerating LDAP configuration profile from $PROFILE_BASE on host $PROFILE_HOST\n";
+}
 
 if ((system("$cmdline > /tmp/ldap.conf.$$") % 256) != 0) {
 	print STDERR "regenerate_ldap_conf.pl: could not regenerate profile\n";
