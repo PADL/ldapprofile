@@ -786,7 +786,7 @@ emitConfKey_NSS_BASE_XXX (LDAP * ld, LDAPMessage * e, FILE * fp)
 
   for (p = descriptors; *p != NULL; p++)
     {
-      char *service, *base;
+      char *service, *base, *semicolon;
 
       service = *p;
       base = strchr (service, ':');
@@ -799,6 +799,14 @@ emitConfKey_NSS_BASE_XXX (LDAP * ld, LDAPMessage * e, FILE * fp)
 	}
       *base = '\0';
       base++;
+
+      /* Semicolons separate multiple descriptors for a single service. */
+      /* We only support one because nss_ldap only supports one, now. */
+      /* Do we need to do any escaping because semicolons can occur in */
+      /* distinguished names? */
+      semicolon = strchr (base, ';');
+      if (semicolon != NULL)
+	*semicolon = '\0';
 
       if (isValidNSSService (service))
 	{
