@@ -5,6 +5,7 @@
 
 # read /etc/ldap.conf, contact the profile
 # server, and regenerate it
+# NOT TESTED -- USE AT YOUR OWN RISK
 
 if (open(LDAPCONF, "/etc/ldap.conf") == 0) {
 	print STDERR "regenerate_ldap_conf.pl: could not find /etc/ldap.conf\n";
@@ -41,20 +42,25 @@ if ($ARGV[0] eq "-D") {
 
 if ($PROFILE_NAME ne "") {
 	push (@LDAPCONFIG, "-p");
-	push (@LDAPCONFIG, $PROFILE_NAME);
+	push (@LDAPCONFIG, "\"$PROFILE_NAME\"");
 }
 
 push (@LDAPCONFIG, "-h");
-push (@LDAPCONFIG, $PROFILE_HOST);
+push (@LDAPCONFIG, "\"$PROFILE_HOST\"");
 
 push (@LDAPCONFIG, "-b");
-push (@LDAPCONFIG, $PROFILE_BASE);
+push (@LDAPCONFIG, "\"$PROFILE_BASE\"");
 
 $cmdline = join(' ', @LDAPCONFIG);
 print "$cmdline\n";
 
-if ((system(@LDAPCONFIG) % 256) != 0) {
+if ((system("$cmdline > /tmp/ldap.conf.$$") % 256) != 0) {
 	print STDERR "regenerate_ldap_conf.pl: could not regenerate profile\n";
 	exit 4;
+}
+
+if (rename("/tmp/ldap.conf.$$", "/etc/ldap.conf") == 0) {
+	print STDERR "regenerate_ldap_conf.pl: could not move /tmp/ldap.conf.$$ to /etc/ldap.conf\n";
+	exit 5;
 }
 

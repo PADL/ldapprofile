@@ -1,10 +1,11 @@
 #!/bin/sh
+# @(#)ldapclient
 # Copyright (c) 2001 PADL Software Pty Ltd.
 # See COPYING for license terms.
 
 DEFAULTDOMAINNAME=`/bin/domainname`
 
-if [ -f /etc/ldap.conf ]; then
+if [ "X$FORCE_LDAPCLIENT" = "X" -a -f /etc/ldap.conf ]; then
 	echo "/etc/ldap.conf already exists."
 	echo "Please move out of the way and rerun ldapclient."
 	exit 1
@@ -39,16 +40,24 @@ echo "$question " | tr -d '\012' > /dev/tty
 read PROFILE
 
 if [ "X$LDAP_BASEDN" != "X" ]; then
-	$cmd = "ldapprofile -h \"$LDAPHOST\" -b \"$LDAP_BASEDN\""
+	cmd="ldapprofile -h \"$LDAPHOST\" -b \"$LDAP_BASEDN\""
 else
-	$cmd = "ldapprofile -h \"$LDAPHOST\" -d \"$DOMAINNAME\""
+	cmd="ldapprofile -h \"$LDAPHOST\" -d \"$DOMAINNAME\""
 fi
 
-if [ "X$LDAPHOST" != "X" ]; then
-	$cmd = "$cmd -p \"$PROFILE\"
+if [ "X$PROFILE" != "X" ]; then
+	cmd="$cmd -p \"$PROFILE\""
 fi
 
-echo "$cmd"
+$cmd > /etc/ldap.conf
 
+if [ $? -ne 0 ]; then
+	echo "$0: ldapprofile returned non-zero exit status"
+	e=$?
+else
+	echo "$0: ldapprofile created /etc/ldap.conf"
+	e=$?
+fi
 
+exit $e
 
