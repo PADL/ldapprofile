@@ -1,0 +1,54 @@
+#!/bin/sh
+# Copyright (c) 2001 PADL Software Pty Ltd.
+# See COPYING for license terms.
+
+DEFAULTDOMAINNAME=`/bin/domainname`
+
+if [ -f /etc/ldap.conf ]; then
+	echo "/etc/ldap.conf already exists."
+	echo "Please move out of the way and rerun ldapclient."
+	exit 1
+fi
+
+question="Enter your NIS domain [$DEFAULTDOMAINNAME]:"
+echo "$question " | tr -d '\012' > /dev/tty
+read DOMAINNAME
+if [ "X$DOMAINNAME" = "X" ]; then
+	if [ "X$DEFAULTDOMAINNAME" = "X" ]; then
+		question="Enter your X.500 search base:"
+		echo "$question " | tr -d '\012' > /dev/tty
+		read LDAP_BASEDN
+		if [ "X$LDAP_BASEDN" = "X" ]; then
+			echo "You must specify a search base."
+			exit 2
+		fi
+	else
+		DOMAINNAME=$DEFAULTDOMAINNAME
+	fi
+fi
+
+question="Enter the name of your LDAP server [ldap]:"
+echo "$question " | tr -d '\012' > /dev/tty
+read LDAPHOST
+if [ "X$LDAPHOST" = "X" ]; then
+	LDAPHOST="ldap"
+fi
+
+question="Enter your profile name:"
+echo "$question " | tr -d '\012' > /dev/tty
+read PROFILE
+
+if [ "X$LDAP_BASEDN" != "X" ]; then
+	$cmd = "ldapprofile -h \"$LDAPHOST\" -b \"$LDAP_BASEDN\""
+else
+	$cmd = "ldapprofile -h \"$LDAPHOST\" -d \"$DOMAINNAME\""
+fi
+
+if [ "X$LDAPHOST" != "X" ]; then
+	$cmd = "$cmd -p \"$PROFILE\"
+fi
+
+echo "$cmd"
+
+
+
