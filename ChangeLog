@@ -1,6 +1,13 @@
 $Id$
 ===============================================================
 
+5	Luke Howard <lukeh@padl.com>
+
+	* updated schema with posixNamingProfile and
+	  configurationProfile classes from HP
+	* search on posixNamingProfile, not 
+	  DUAConfigProfile
+
 3	Luke Howard <lukeh@padl.com>
 
 	* added OpenLDAP schema file

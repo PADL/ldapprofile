@@ -31,6 +31,7 @@ lukeh@padl/au[192]% ./migrate_profile.pl ldaphost
 dn: cn=config,dc=padl,dc=com
 cn: config
 objectClass: DUAConfigProfile
+objectClass: posixNamingProfile
 defaultServerList: ldaphost
 defaultSearchBase: dc=padl,dc=com
 defaultSearchScope: one

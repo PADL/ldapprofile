@@ -3,6 +3,8 @@
 # XXX have fudged some syntaxes that we don't have in OpenLDAP
 # yet
 
+# Subject to change
+
 #
 # Application Working Group                                      M. Ansari
 # INTERNET-DRAFT                                    Sun Microsystems, Inc.
@@ -129,4 +131,15 @@ objectclass ( 1.3.6.1.4.1.11.1.3.1.2.3 NAME 'DUAConfigProfile'
         followReferrals $ serviceSearchDescriptor $
         objectclassMap $ attributeMap $
         profileTTL ) )
+
+objectclass ( 1.3.6.1.4.1.11.1.3.1.2.1 NAME 'posixNamingProfile'
+  SUP top AUXILIARY
+  DESC 'POSIX naming profile'
+  MAY ( attributeMap $ serviceSearchDescriptor ) )
+
+objectclass ( 1.3.6.1.4.1.11.1.3.1.2.2 NAME 'configurationProfile'
+  SUP top AUXILIARY
+  DESC 'Configuration profile'
+  MUST ( cn )
+  MAY ( attributeMap $ serviceSearchDescriptor ) )
 
