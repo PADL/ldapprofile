@@ -58,7 +58,7 @@ static char *getStringValue (LDAP * ld, LDAPMessage * entry,
 			     const char *attribute);
 static char **getStringValues (LDAP * ld, LDAPMessage * entry,
 			       const char *attribute);
-static int emitPosixNamingProfile (LDAP * ld, const char *base,
+static int emitDUAConfigProfile (LDAP * ld, const char *base,
 				 const char *profile, const char *host,
 				 FILE * fp);
 static void emitConfigurationHeader (LDAP * ld, LDAPMessage * e, FILE * fp);
@@ -165,7 +165,7 @@ main (int argc, char **argv)
     }
 
   rc =
-    emitPosixNamingProfile (ld, profileBase, profileName, ldapServer, stdout);
+    emitDUAConfigProfile (ld, profileBase, profileName, ldapServer, stdout);
   if (rc != LDAP_SUCCESS)
     {
       if (profileName != NULL)
@@ -258,7 +258,7 @@ connectToServer (char *host, LDAP ** ld)
 }
 
 static int
-emitPosixNamingProfile (LDAP * ld, const char *base, const char *profileName,
+emitDUAConfigProfile (LDAP * ld, const char *base, const char *profileName,
 		      const char *hostWithProfile, FILE * fp)
 {
   int rc;
@@ -276,12 +276,12 @@ emitPosixNamingProfile (LDAP * ld, const char *base, const char *profileName,
 
   if (profileName == NULL)
     {
-      snprintf (filter, sizeof (filter), "(objectclass=posixNamingProfile)");
+      snprintf (filter, sizeof (filter), "(objectclass=DUAConfigProfile)");
     }
   else
     {
       snprintf (filter, sizeof (filter),
-		"(&(objectclass=posixNamingProfile)(cn=%s))", profileName);
+		"(&(objectclass=DUAConfigProfile)(cn=%s))", profileName);
     }
 
   if (debug)
@@ -696,7 +696,7 @@ chaseReferral (LDAP * ld, const char *service, char *referral)
 
   rc =
     ldap_search_s (ld, base, LDAP_SCOPE_BASE,
-		   "(objectclass=posixNamingProfile)", searchDescAttrs, 0,
+		   "(objectclass=DUAConfigProfile)", searchDescAttrs, 0,
 		   &res);
   if (rc != LDAP_SUCCESS)
     {

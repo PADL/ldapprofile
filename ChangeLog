@@ -1,6 +1,10 @@
 $Id$
 ===============================================================
 
+6	Luke Howard <lukeh@padl.com>
+
+	* search back to DUAConfigProfile
+
 5	Luke Howard <lukeh@padl.com>
 
 	* updated schema with posixNamingProfile and
