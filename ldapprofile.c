@@ -262,9 +262,6 @@ emitDUAConfigProfile (LDAP * ld, const char *base, const char *profileName,
 		      const char *hostWithProfile, FILE * fp)
 {
   int rc;
-#if 1
-  char *profileAttrs[] = { "*", "+", NULL };
-#else
   char *profileAttrs[] = { "cn",
     "defaultServerList", "preferredServerList",
     "defaultSearchBase", "defaultSearchScope",
@@ -274,7 +271,6 @@ emitDUAConfigProfile (LDAP * ld, const char *base, const char *profileName,
     "objectclassMap", "attributeMap",
     "profileTTL", NULL
   };
-#endif
   LDAPMessage *profileRes, *profileEntry;
   char filter[LDAP_FILT_MAXSIZ];
 
@@ -402,11 +398,7 @@ getBaseForNisDomain (LDAP * ld, const char *nisDomain, char **baseForProfile)
       if (isUserContext)
 	{
 	  LDAPMessage *baseRes, *baseEntry;
-#if 1
-	  char *baseAttrs[] = { "*", "+", NULL };
-#else
 	  char *baseAttrs[] = { "nisDomain", NULL };
-#endif
 	  char nisDomainFilter[LDAP_FILT_MAXSIZ];
 
 	  snprintf (nisDomainFilter, sizeof (nisDomainFilter),
@@ -694,11 +686,7 @@ chaseReferral (LDAP * ld, const char *service, char *referral)
   LDAPMessage *res, *e;
   int rc;
   const char *base = referral + sizeof ("ref:") - 1;
-#if 1
-  char *searchDescAttrs[] = { "*", "+", NULL };
-#else
   char *searchDescAttrs[] = { "serviceSearchDescriptor", NULL };
-#endif
   char **descriptors, **p;
 
   if (debug)
