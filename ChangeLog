@@ -1,6 +1,10 @@
 $Id$
 ===============================================================
 
+3	Luke Howard <lukeh@padl.com>
+
+	* added OpenLDAP schema file
+
 1	Luke Howard <lukeh@padl.com>
 
 	* Initial version
