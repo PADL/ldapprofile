@@ -841,7 +841,6 @@ emitConfKey_NSS_BASE_XXX (LDAP * ld, LDAPMessage * e, FILE * fp)
 	      free (chasedBase);
 	    }
 	}
-      free (service);
     }
 
   ldap_value_free (descriptors);
