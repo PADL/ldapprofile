@@ -1,6 +1,11 @@
 $Id$
 ===============================================================
 
+8	Luke Howard <lukeh@padl.com>
+
+	* back to DUAConfigProfile (???)
+	* workarounds for LDAP-UX compat
+
 7	Luke Howard <lukeh@padl.com>
 
 	* Bob wins, back to posixNamingProfile
