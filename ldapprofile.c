@@ -42,6 +42,10 @@
 #define LDAP_VERSION3 3
 #endif
 
+#ifndef LDAP_FILT_MAXSIZ
+#define LDAP_FILT_MAXSIZ 1024
+#endif /* !LDAP_FILT_MAXSIZE */
+
 typedef enum _ProfileSyntax
 {
   ProfileSyntaxBoolean,
