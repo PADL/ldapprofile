@@ -2,5 +2,5 @@
 # $Id$
 # $Name$
 ProjectName: ldapprofile
-ProjectVersion: 2
+ProjectVersion: 3
 ProjectMaintainer: lukeh
