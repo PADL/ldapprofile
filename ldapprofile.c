@@ -4,7 +4,7 @@
  * Generate /etc/ldap.conf from profile information stored
  * in directory.
  *
- * Copyright (c) 2001 PADL Software Pty Ltd.
+ * Copyright (c) 2001, 2005 PADL Software Pty Ltd.
  * All rights reserved.
  *
  * Please see COPYING for license terms.
@@ -63,7 +63,7 @@ static char *getStringValue (LDAP * ld, LDAPMessage * entry,
 			     const char *attribute);
 static char **getStringValues (LDAP * ld, LDAPMessage * entry,
 			       const char *attribute);
-static int emitPosixNamingProfile (LDAP * ld, const char *base,
+static int emitDUAConfigProfile (LDAP * ld, const char *base,
 				 const char *profile, const char *host,
 				 FILE * fp);
 static void emitConfigurationHeader (LDAP * ld, LDAPMessage * e, FILE * fp);
@@ -79,6 +79,8 @@ static void emitConfKey_XXX (LDAP * ld, LDAPMessage * e,
 static void emitConfKey_NSS_BASE_XXX (LDAP * ld, LDAPMessage * e, FILE * fp);
 static int isValidNSSService (const char *serviceName);
 static char *chaseReferral (LDAP * ld, const char *service, char *referral);
+static void
+emitConfKey_NSS_MAP_ATTRIBUTE_XXX (LDAP * ld, LDAPMessage * e, FILE * fp);
 
 static int debug = 0;
 
@@ -170,7 +172,7 @@ main (int argc, char **argv)
     }
 
   rc =
-    emitPosixNamingProfile (ld, profileBase, profileName, ldapServer, stdout);
+    emitDUAConfigProfile (ld, profileBase, profileName, ldapServer, stdout);
   if (rc != LDAP_SUCCESS)
     {
       if (profileName != NULL)
@@ -263,7 +265,7 @@ connectToServer (char *host, LDAP ** ld)
 }
 
 static int
-emitPosixNamingProfile (LDAP * ld, const char *base, const char *profileName,
+emitDUAConfigProfile (LDAP * ld, const char *base, const char *profileName,
 		      const char *hostWithProfile, FILE * fp)
 {
   int rc;
@@ -281,12 +283,12 @@ emitPosixNamingProfile (LDAP * ld, const char *base, const char *profileName,
 
   if (profileName == NULL)
     {
-      snprintf (filter, sizeof (filter), "(objectclass=posixNamingProfile)");
+      snprintf (filter, sizeof (filter), "(objectclass=DUAConfigProfile)");
     }
   else
     {
       snprintf (filter, sizeof (filter),
-		"(&(objectclass=posixNamingProfile)(cn=%s))", profileName);
+		"(&(objectclass=DUAConfigProfile)(cn=%s))", profileName);
     }
 
   if (debug)
@@ -330,6 +332,7 @@ emitPosixNamingProfile (LDAP * ld, const char *base, const char *profileName,
   emitConfKey_XXX (ld, profileEntry, "followReferrals", "REFERRALS",
 		   ProfileSyntaxBoolean, fp);
   emitConfKey_NSS_BASE_XXX (ld, profileEntry, fp);
+  emitConfKey_NSS_MAP_ATTRIBUTE_XXX (ld, profileEntry, fp);
 
   ldap_msgfree (profileRes);
 
@@ -701,7 +704,7 @@ chaseReferral (LDAP * ld, const char *service, char *referral)
 
   rc =
     ldap_search_s (ld, base, LDAP_SCOPE_BASE,
-		   "(objectclass=posixNamingProfile)", searchDescAttrs, 0,
+		   "(objectclass=DUAConfigProfile)", searchDescAttrs, 0,
 		   &res);
   if (rc != LDAP_SUCCESS)
     {
@@ -836,4 +839,63 @@ emitConfKey_NSS_BASE_XXX (LDAP * ld, LDAPMessage * e, FILE * fp)
     }
 
   ldap_value_free (descriptors);
+}
+
+static void
+emitConfKey_NSS_MAP_ATTRIBUTE_XXX (LDAP * ld, LDAPMessage * e, FILE * fp)
+{
+  char **maps;
+  char **p;
+
+  maps = getStringValues (ld, e, "attributeMap");
+  if (maps == NULL)
+    {
+      return;
+    }
+
+  for (p = maps; *p != NULL; p++)
+    {
+      char *service, *from, *to;
+
+      service = *p;
+      from = strchr (service, ':');
+      if (from == NULL)
+	{
+	  fprintf (stderr,
+		   "warning: malformed attributeMap value: %s\n",
+		   *p);
+	  continue;
+	}
+      *from = '\0';
+      from++;
+
+      /* Semicolons separate multiple descriptors for a single service. */
+      /* We only support one because nss_ldap only supports one, now. */
+      /* Do we need to do any escaping because semicolons can occur in */
+      /* distinguished names? */
+      to = strchr (from, '=');
+      if (to == NULL)
+	  continue;
+
+      *to = '\0';
+      to++;
+
+      if (isValidNSSService (service))
+	{
+	  char *p = strchr(to, ' ');
+	  if (p != NULL)
+	    *p = '\0';
+
+	  if (!strcmp(service, "group") && !strcmp(from, "memberUid"))
+	    {
+	      if (!strcmp(to, "member") || !strcmp(to, "uniqueMember") ||
+		  !strcmp(to, "posixMember"))
+		from = "uniqueMember"; /* XXX don't ask */
+	    }
+
+	  fprintf (fp, "NSS_MAP_ATTRIBUTE %s:%s %s\n", service, from, to);
+	}
+    }
+
+  ldap_value_free (maps);
 }
