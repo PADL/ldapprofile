@@ -58,7 +58,7 @@ static char *getStringValue (LDAP * ld, LDAPMessage * entry,
 			     const char *attribute);
 static char **getStringValues (LDAP * ld, LDAPMessage * entry,
 			       const char *attribute);
-static int emitposixNamingProfile (LDAP * ld, const char *base,
+static int emitPosixNamingProfile (LDAP * ld, const char *base,
 				 const char *profile, const char *host,
 				 FILE * fp);
 static void emitConfigurationHeader (LDAP * ld, LDAPMessage * e, FILE * fp);
@@ -165,7 +165,7 @@ main (int argc, char **argv)
     }
 
   rc =
-    emitposixNamingProfile (ld, profileBase, profileName, ldapServer, stdout);
+    emitPosixNamingProfile (ld, profileBase, profileName, ldapServer, stdout);
   if (rc != LDAP_SUCCESS)
     {
       if (profileName != NULL)
@@ -258,7 +258,7 @@ connectToServer (char *host, LDAP ** ld)
 }
 
 static int
-emitposixNamingProfile (LDAP * ld, const char *base, const char *profileName,
+emitPosixNamingProfile (LDAP * ld, const char *base, const char *profileName,
 		      const char *hostWithProfile, FILE * fp)
 {
   int rc;
