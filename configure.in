@@ -19,13 +19,6 @@ dnl This is needed for the native Solaris LDAP SDK
 CPPFLAGS="$CPPFLAGS -DLDAP_REFERRALS"
 CPPFLAGS="$CPPFLAGS -D_REENTRANT"
 
-case "$target_os" in
-solaris*) ldapprofile_LDFLAGS="-G" ;;
-*) ldapprofile_LDFLAGS="--shared" ;;
-dnl "--shared" is undocumented for gcc, shouldn't this be "-shared"?
-esac
-AC_SUBST(ldapprofile_LDFLAGS)
-
 if test -n "$with_ldap_dir"; then
   CPPFLAGS="$CPPFLAGS -I$with_ldap_dir/include"
   LDFLAGS="$LDFLAGS -L$with_ldap_dir/lib"
@@ -39,12 +32,6 @@ AC_CHECK_HEADERS(des.h crypt.h)
 AC_CHECK_HEADERS(lber.h)
 AC_CHECK_HEADERS(ldap.h, , AC_MSG_ERROR(could not locate <ldap.h>))
 AC_CHECK_HEADERS(ldap_ssl.h)
-
-AC_CHECK_LIB(dl, main)
-AC_CHECK_LIB(pam, main)
-dnl AC_CHECK_LIB(pthread, main)
-AC_CHECK_LIB(resolv, main)
-AC_CHECK_LIB(crypt, main)
 
 AC_CHECK_FUNCS(gethostbyname)
 if test "$ac_cv_func_gethostbyname" = "no"; then

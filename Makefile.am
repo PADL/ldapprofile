@@ -1,5 +1,5 @@
-EXTRA_DIST = COPYING CVSVersionInfo.txt ChangeLog README 
 
-#ldapprofile_SOURCES = ldapprofile.c
-#ldapprofile_LDFLAGS = @ldapprofile_LDFLAGS@
+AUTOMAKE_OPTIONS = 1.0 foreign
+
+sbin_PROGRAMS = ldapprofile
 

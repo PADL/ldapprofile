@@ -51,32 +51,14 @@
 /* Define if you have the <ldap_ssl.h> header file.  */
 #undef HAVE_LDAP_SSL_H
 
-/* Define if you have the <security/pam_appl.h> header file.  */
-#undef HAVE_SECURITY_PAM_APPL_H
-
-/* Define if you have the <security/pam_misc.h> header file.  */
-#undef HAVE_SECURITY_PAM_MISC_H
-
-/* Define if you have the crypt library (-lcrypt).  */
-#undef HAVE_LIBCRYPT
-
-/* Define if you have the dl library (-ldl).  */
-#undef HAVE_LIBDL
-
 /* Define if you have the lber library (-llber).  */
 #undef HAVE_LIBLBER
 
 /* Define if you have the nsl library (-lnsl).  */
 #undef HAVE_LIBNSL
 
-/* Define if you have the pam library (-lpam).  */
-#undef HAVE_LIBPAM
-
 /* Define if you have the pthread library (-lpthread).  */
 #undef HAVE_LIBPTHREAD
-
-/* Define if you have the resolv library (-lresolv).  */
-#undef HAVE_LIBRESOLV
 
 /* Name of package */
 #undef PACKAGE
