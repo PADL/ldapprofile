@@ -1,19 +1,18 @@
-AC_INIT(pam_ldap.c)
+AC_INIT(ldapprofile.c)
 AC_CANONICAL_SYSTEM
 AC_PREFIX_DEFAULT()
 
-AM_INIT_AUTOMAKE(pam_ldap, 84)
+AM_INIT_AUTOMAKE(ldapprofile, 1)
 AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 
-AC_ARG_ENABLE(ypldapd, [  --enable-ypldapd        enable PADL ypldapd specific features], [AC_DEFINE(YPLDAPD)])
 AC_ARG_WITH(ldap-lib, [  --with-ldap-lib=type    select ldap library [auto|netscape3|netscape4|umich|openldap]])
 AC_ARG_WITH(ldap-dir, [  --with-ldap-dir=DIR     base directory of ldap SDK])
 
-AM_CONDITIONAL(EXTENSION_SO, test "$target_os" = "linux" -o "$target_os" = "linux-gnu")
+dnl AM_CONDITIONAL(EXTENSION_SO, test "$target_os" = "linux" -o "$target_os" = "linux-gnu")
 if test "$ac_cv_prog_gcc" = "yes"; then CFLAGS="$CFLAGS -Wall -fPIC"; fi
 
 dnl This is needed for the native Solaris LDAP SDK
@@ -21,11 +20,11 @@ CPPFLAGS="$CPPFLAGS -DLDAP_REFERRALS"
 CPPFLAGS="$CPPFLAGS -D_REENTRANT"
 
 case "$target_os" in
-solaris*) pam_ldap_so_LDFLAGS="-G" ;;
-*) pam_ldap_so_LDFLAGS="--shared" ;;
+solaris*) ldapprofile_LDFLAGS="-G" ;;
+*) ldapprofile_LDFLAGS="--shared" ;;
 dnl "--shared" is undocumented for gcc, shouldn't this be "-shared"?
 esac
-AC_SUBST(pam_ldap_so_LDFLAGS)
+AC_SUBST(ldapprofile_LDFLAGS)
 
 if test -n "$with_ldap_dir"; then
   CPPFLAGS="$CPPFLAGS -I$with_ldap_dir/include"
@@ -36,7 +35,6 @@ if test -n "$with_ldap_dir"; then
   esac  
 fi
 
-AC_CHECK_HEADERS(security/pam_appl.h security/pam_misc.h)
 AC_CHECK_HEADERS(des.h crypt.h)
 AC_CHECK_HEADERS(lber.h)
 AC_CHECK_HEADERS(ldap.h, , AC_MSG_ERROR(could not locate <ldap.h>))
@@ -87,10 +85,10 @@ AC_CHECK_FUNCS(ldap_init ldapssl_init ldap_start_tls_s ldap_get_lderrno ldap_par
 AC_CHECK_FUNCS(gethostbyname_r)
 
 if test "$ac_cv_func_gethostbyname_r" = "yes"; then
-AC_CACHE_CHECK(whether gethostbyname_r takes 6 arguments, pam_ldap_cv_gethostbyname_r_args, [
+AC_CACHE_CHECK(whether gethostbyname_r takes 6 arguments, ldapprofile_cv_gethostbyname_r_args, [
 AC_TRY_COMPILE([
-#include <netdb.h>], [gethostbyname_r(0, 0, 0, 0, 0, 0);], [pam_ldap_cv_gethostbyname_r_args=6], [pam_ldap_cv_gethostbyname_r_args=5]) ])
-AC_DEFINE_UNQUOTED(GETHOSTBYNAME_R_ARGS, $pam_ldap_cv_gethostbyname_r_args)
+#include <netdb.h>], [gethostbyname_r(0, 0, 0, 0, 0, 0);], [ldapprofile_cv_gethostbyname_r_args=6], [ldapprofile_cv_gethostbyname_r_args=5]) ])
+AC_DEFINE_UNQUOTED(GETHOSTBYNAME_R_ARGS, $ldapprofile_cv_gethostbyname_r_args)
 fi
 
 AC_CHECK_FUNCS(ldap_set_rebind_proc)
