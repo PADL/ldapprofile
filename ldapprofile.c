@@ -22,6 +22,7 @@
 #include <netdb.h>
 #include <errno.h>
 #include <ctype.h>
+#include <time.h>
 
 #ifdef HAVE_LBER_H
 #include <lber.h>
@@ -825,7 +826,6 @@ emitConfKey_NSS_BASE_XXX (LDAP * ld, LDAPMessage * e, FILE * fp)
 		}
 
 	      fprintf (fp, "NSS_BASE_%s %s\n", service, chasedBase);
-
 	      free (chasedBase);
 	    }
 	}

@@ -787,7 +787,7 @@ fi
 
 PACKAGE=ldapprofile
 
-VERSION=5
+VERSION=7
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
